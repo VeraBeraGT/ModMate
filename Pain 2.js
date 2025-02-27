@@ -751,7 +751,7 @@ function getModEndTime(d,m) {
 
 function accountForDOW(d,m) {
   if (d >= 3 && d <= 5) {
-  var dw = ((d - 1) * 10) - 1;
+  var dw = ((d - 1) * 10);
   var md = dw + d
   if (md > 32 && d == 3 || md > 43 && d == 4 || md > 54 && d == 5) {
     var t = " "
