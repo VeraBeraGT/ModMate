@@ -15,6 +15,10 @@ let settings = fm.fileExists(settingsPath) ? JSON.parse(fm.readString(settingsPa
 let secIdIndex;
 console.log(schedule)
 
+class Editor {
+  
+      
+}
 async function showMainMenu() {
     let table = new UITable();
     table.showSeparators = true;
@@ -49,7 +53,7 @@ async function editColors() {
     
     let bgRow = new UITableRow();
     let txt = bgRow.addText("Background Color (Hex): " + settings.backgroundColor);
-    txt.tittleColor = new Color(`${settings.backgroundColor}`)
+    txt.titleColor = new Color(settings.backgroundColor)
     bgRow.onSelect = async () => {
         let alert = new Alert();
         alert.title = "Edit Background Color";
@@ -65,14 +69,12 @@ async function editColors() {
     table.addRow(bgRow);
     
     let textRow = new UITableRow();
-    let txt2 = textRow.addText("Text Color (RGB): " + settings.textColor);
-    let col = settings.textColor
-    console.log(col)
-    txt2.tittleColor = new Color(`#f5f5f5`)
+    let txt2 = textRow.addText("Text Color (Hex): " + settings.textColor);
+    txt2.titleColor = new Color(settings.textColor)
     textRow.onSelect = async () => {
         let alert = new Alert();
         alert.title = "Edit Text Color";
-        alert.addTextField("R,G,B", settings.textColor);
+        alert.addTextField("Hex", settings.textColor);
         alert.addAction("Save");
         alert.addCancelAction("Cancel");
         let response = await alert.present();
@@ -91,7 +93,7 @@ async function editColors() {
     };
     table.addRow(saveRow);
     
-    await table.present();
+    await table.present(true);
     
 }
 
@@ -400,9 +402,10 @@ async function format() {
     return array;
 }
 
+let txtclr = new Color(settings.textColor)
+let bkgclr = new Color(settings.backgroundColor)
+
 var now = new Date();
-now.setHours(8)
-now.setMinutes(15)
 var dow = now.getDay();
 // Homeroom
 // Start Time 
@@ -721,6 +724,7 @@ function getModNum(n,d) {
   } 
   return m
 }
+console.log(`get mod num: ${getModNum(now,dow)}`)
 function getModStartTime(d,m) {
   var mod = "N/A";
   if (m > 10) {
@@ -791,19 +795,19 @@ console.log(dow)
 console.log(mods[32])
 async function createWidget() {
   let listWidget = new ListWidget()
-  listWidget.backgroundColor = pclr
+  listWidget.backgroundColor = bkgclr
   
   var widgetPerm = listWidget.widgetParameter;
   
   if (config.widgetFamily == "medium") {
-    var txt1Size = 25;
+    var txt1Size = 20;
     var txt2Size = 20;
     var txt3Size = 10;
     
     let nextClass = listWidget.addText("Next Class: " + accountForDOW(dow, getModNum(now, dow) + 1));
   nextClass.font = Font.blackSystemFont(35);
   nextClass.centerAlignText();
-  nextClass.textColor = new Color("000");
+  nextClass.textColor = txtclr
   
   } else if (config.runsInAccessoryWidget) {
     var txtSize = 10;
@@ -827,7 +831,7 @@ async function createWidget() {
   let currentClass = listWidget.addText("Current Class: " + accountForDOW(dow, getModNum(now, dow)));
   currentClass.font = Font.blackSystemFont(bigText);
   currentClass.centerAlignText();
-  currentClass.textColor = new Color("000");
+  currentClass.textColor = txtclr;
   
   let mainStack = listWidget.addStack();
   mainStack.size = new Size(718,180);
@@ -845,14 +849,14 @@ async function createWidget() {
   let nextClass = ncStack.addText("Next Class: " + accountForDOW(dow, getModNum(now, dow) + 1));
   nextClass.font = Font.blackSystemFont(txt1Size);
   nextClass.centerAlignText();
-  nextClass.textColor = blclr
+  nextClass.textColor = txtclr
   
   ncStack.addSpacer(10)
   
   let currentClassEndTime = ncStack.addText("Mod Ends at: " + getModEndTime(dow,getModNum(now,dow)));
   currentClassEndTime.font = Font.blackSystemFont(txt1Size);
   currentClassEndTime.centerAlignText();
-  currentClassEndTime.textColor = blclr;
+  currentClassEndTime.textColor = txtclr;
   
   let rightStack = mainStack.addStack();
   rightStack.size = new Size(309,180)
@@ -867,11 +871,11 @@ async function createWidget() {
   
   let text1 = textStack.addText("Up Next:");
   text1.font = Font.lightSystemFont(txt2Size);
-  text1.textColor = blclr;
+  text1.textColor = txtclr
   
   let underline = textStack.addStack()
   underline.size = new Size(110,5)
-  underline.backgroundColor = blclr
+  underline.backgroundColor = txtclr
   
   let rightinfoStack = rightStack.addStack();
   rightinfoStack.size = new Size(309,120);
@@ -885,19 +889,19 @@ async function createWidget() {
   
   let time1 = timeStack.addText(getModStartTime(dow, getModNum(now,dow) + 1));
   time1.font = Font.lightMonospacedSystemFont(txt3Size);
-  time1.textColor = blclr;
+  time1.textColor = txtclr;
   
   let time2 = timeStack.addText(getModStartTime(dow, getModNum(now,dow) + 2));
   time2.font = Font.lightMonospacedSystemFont(txt3Size);
-  time2.textColor = blclr;
+  time2.textColor = txtclr;
   
   let time3 = timeStack.addText(getModStartTime(dow, getModNum(now,dow) + 3));
   time3.font = Font.lightMonospacedSystemFont(txt3Size);
-  time3.textColor = blclr;
+  time3.textColor = txtclr;
   
   let time4 = timeStack.addText(getModStartTime(dow, getModNum(now,dow) + 4));
   time4.font = Font.lightMonospacedSystemFont(txt3Size);
-  time4.textColor = blclr;
+  time4.textColor = txtclr;
   
   let classStack = rightinfoStack.addStack();
   classStack.size = new Size(209,120);
@@ -905,19 +909,19 @@ async function createWidget() {
   
   let class1 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 1));
   class1.font = Font.lightMonospacedSystemFont(txt3Size);
-  class1.textColor = blclr;
+  class1.textColor = txtclr;
   
   let class2 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 2));
   class2.font = Font.lightMonospacedSystemFont(txt3Size);
-  class2.textColor = blclr;
+  class2.textColor = txtclr;
   
   let class3 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 3));
   class3.font = Font.lightMonospacedSystemFont(txt3Size);
-  class3.textColor = blclr;
+  class3.textColor = txtclr;
   
   let class4 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 4));
   class4.font = Font.lightMonospacedSystemFont(txt3Size);
-  class4.textColor = blclr;
+  class4.textColor = txtclr;
   
   }
   
