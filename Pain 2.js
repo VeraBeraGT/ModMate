@@ -93,7 +93,7 @@ async function editColors() {
     };
     table.addRow(saveRow);
     
-    await table.present(true);
+    await table.present();
     
 }
 
@@ -233,171 +233,230 @@ async function format() {
     
     let array = ["HomeRoom"]
     
+    let num = -1;
+    
     var find;
     var push;
     
     find = schedule.find(item => item.schedule.Monday === 1)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Monday === 2)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Monday === 3)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Monday === 4)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Monday === 5)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Monday === 6)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Monday === 7)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Monday === 8)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Monday === 9)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Monday === 10)
     push = find ? find.name : "Open Mod"
+    num = num + 1
+    array.push(push)
     
     array.push("HomeRoom")
     
     find = schedule.find(item => item.schedule.Tuesday === 1)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Tuesday === 2)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Tuesday === 3)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Tuesday === 4)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Tuesday === 5)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Tuesday === 6)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Tuesday === 7)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Tuesday === 8)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Tuesday === 9)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Tuesday === 10)
     push = find ? find.name : "Open Mod"
+    num = num + 1
+    array.push(push)
     
     array.push(" ")
+    num = num + 1
     
     find = schedule.find(item => item.schedule.Wednesday === 1)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Wednesday === 2)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Wednesday === 3)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Wednesday === 4)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Wednesday === 5)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Wednesday === 6)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Wednesday === 7)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Wednesday === 8)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Wednesday === 9)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Wednesday === 10)
     push = find ? find.name : "Open Mod"
+    num = num + 1
+    array.push(push)
     
     array.push("HomeRoom")
+    num = num + 1
     
     find = schedule.find(item => item.schedule.Thursday === 1)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Thursday === 2)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Thursday === 3)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Thursday === 4)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Thursday === 5)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Thursday === 6)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Thursday === 7)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Thursday === 8)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Thursday === 9)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Thursday === 10)
-    push = find ? find.name : "Open Mod"
+    push = find ? find.name : "Open Modd"
+    num = num + 1
+    array.push(push)
     
     array.push("HomeRoom")
+    num = num + 1
     
     find = schedule.find(item => item.schedule.Friday === 1)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Friday === 2)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Friday === 3)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Friday === 4)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Friday === 5)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Friday === 6)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Friday === 7)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Friday === 8)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Friday === 9)
     push = find ? find.name : "Open Mod"
+    num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Friday === 10)
     push = find ? find.name : "Open Mod"
-    
-    array.push("HomeRoom")
+    num = num + 1
+    array.push(push)
     
     
     console.log(array)
+    console.log(`Num:${num}`)
     
     return array;
 }
@@ -407,6 +466,8 @@ let bkgclr = new Color(settings.backgroundColor)
 
 var now = new Date();
 var dow = now.getDay();
+console.log(`dow ${dow}`)
+console.log(`dow: ${dow}`)
 // Homeroom
 // Start Time 
 let hrS = new Date();
@@ -669,7 +730,7 @@ var modss = [
   h,o,g,o,b,e,l,m,d,s,bnd
 ];
 var mods = await format()
-console.log(`Mod: ${mods[0]}`)
+console.log(`Mod: ${mods[49]}`)
 var modStartTimes = ["8:00","8:15","8:57","9:39","10:21","11:03","11:45","12:27","13:09","13:51","14:33"];
 var modEndTimes = ["8:10","8:52","9:34","10:16","10:58","11:40","12:22","13:04","13:46","14:28","15:10"];
 
@@ -755,9 +816,20 @@ function getModEndTime(d,m) {
 
 function accountForDOW(d,m) {
   if (d >= 3 && d <= 5) {
-  var dw = ((d - 1) * 10);
-  var md = dw + d
-  if (md > 32 && d == 3 || md > 43 && d == 4 || md > 54 && d == 5) {
+    if (d == 3) {
+      var dt = d
+    } else {
+      var dt = d-1
+    }
+  var dw = ((d-1) * 10) + dt;
+  var md = dw + m
+  console.warn(md)
+  console.warn(dw)
+  console.warn(d)
+  console.warn(m)
+  console.warn(m+dw +1)
+  if (md >= 33 && d == 3 || md >= 44 && d == 4 || md >= 55 && d == 5) {
+    console.log('run')
     var t = " "
   } else {
   t = mods[m + dw]; 
@@ -790,7 +862,7 @@ var gclr = new Color("00f");
 var bclr = new Color("0f0");
 console.log(getModNum(now, dow));
 console.log(mods[getModNum(now, dow)])
-console.log(`testing var: ${accountForDOW(dow, getModNum(now, dow))}`)
+console.log(`testing var: ${accountForDOW(3, getModNum(now, 3))}`)
 console.log(dow)
 console.log(mods[32])
 async function createWidget() {
