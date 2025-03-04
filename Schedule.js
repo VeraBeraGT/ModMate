@@ -5,7 +5,7 @@ const fm = FileManager.local();
 const dir = fm.documentsDirectory();
 const filePath = fm.joinPath(dir, "schedule.json");
 const settingsPath = fm.joinPath(dir, "settings.json");
-
+//Updated
 
 // Load existing schedule or initialize a new one
 let schedule = fm.fileExists(filePath) ? JSON.parse(fm.readString(filePath)) : [];
