@@ -1,11 +1,16 @@
-## ModMate
+# ModMate
+
+## What is it?
+It’s a scriptable widget that displays your schedule for school. Eventually it will be able to mark down assignments and do other things similar to what Saturn can do. But for now, it works.
 
 
-It’s a scriptable widget that displays your schedule for school. 
-eventually it will be able to mark down assignments and do other things similar to what Saturn can do.
+## How to get it?
+First make sure you have the application **Scriptable** installed. Next go to releases, find the newest version and download the file called ModMate.shorcut. it should prompt you to add a shortcut to your device, accept this prompt. once you do, click on the new ModMate shortcut and it should start installing. for the record, this short cut is also an updater but ill make sure to post a new release every time i make a major update to the script.
+
+## Setting up your classes
+Once you finish installing it, head over to scriptable and find the script called ModMate and click on it. A menu will pop up and on that menu their is going to be a button called "Schedule", click it. Another menu should pop up with an add class button, click it then type in the name of your class and click save. now a menu should show up with the add class button and the class you just added. click on your newly added class and on the new menu click each of the days of the week and type in the mod num, 1-10. Don't worry about adding open mods or homeroom, those are already their. **make sure to click save changes at the bottom of the mod selection screen or else your stuff won't save**
+
+## Adding the widget
+Now that you have added all your classes you can click close if you still have the menu open and head to your homescreen. Click and hold on an empty space on your screen until the apps start to wiggle. Once they do, click the edit button in the top left of the screen, then click add widgets. click search and type in scriptable, then swipe over to the biggest widget and tap on it. place it down somewhere then tap on it, click on script and then click on ModMate. Then boom, enjoy ModMate.
 
 
-# How to use it?
-First make sure you have the application **Scriptable** installed. Then Click on Pain.js, then in the top right of the little box, click the button that says download raw code. once its done, click the download symbol in the top corner of your screen and click on the file. then click the share icon and click save to file. click on cloud drive and scroll down until you see a folder named scriptable. click on it then click the save button in the top right. now go to your homescreen and click and hold on an empty space. when the apps start shaking, click the edit button in the top left. then click add widget. scroll down on the left until you find scriptable, then swipe over until you get the biggest one. click on it and it should get added. now click on your newly added widget and click the chose option next to "select script". click on Pain 2. now click anywhere on the screen to cancel edit mode. finally click on the widget. when the menu opens, click schedule. click add class it will prompt you for the class name. to edit the mods, you need to click on that class name and click each individul day and set the mod to an int 1-10 or to nothing at all. dw about the open mods, their auto calculated. 
-
-# Please enjoy shitty saturn
