@@ -5,7 +5,6 @@ const fm = FileManager.local();
 const dir = fm.documentsDirectory();
 const filePath = fm.joinPath(dir, "schedule.json");
 const settingsPath = fm.joinPath(dir, "settings.json");
-//Updated
 
 // Load existing schedule or initialize a new one
 let schedule = fm.fileExists(filePath) ? JSON.parse(fm.readString(filePath)) : [];
@@ -13,12 +12,7 @@ let settings = fm.fileExists(settingsPath) ? JSON.parse(fm.readString(settingsPa
 
 
 let secIdIndex;
-console.log(schedule)
 
-class Editor {
-  
-      
-}
 async function showMainMenu() {
     let table = new UITable();
     table.showSeparators = true;
@@ -455,8 +449,7 @@ async function format() {
     array.push(push)
     
     
-    console.log(array)
-    console.log(`Num:${num}`)
+    
     
     return array;
 }
@@ -466,8 +459,6 @@ let bkgclr = new Color(settings.backgroundColor)
 
 var now = new Date();
 var dow = now.getDay();
-console.log(`dow ${dow}`)
-console.log(`dow: ${dow}`)
 // Homeroom
 // Start Time 
 let hrS = new Date();
@@ -708,34 +699,14 @@ let mod10EW = new Date();
 mod10EW.setHours(14);
 mod10EW.setMinutes(50);
 
-var h = "Homeroom";
-var e = "English";
-var elg = "English Large Group";
-var o = "Open Mod"; 
-var g = "Geometry";
-var glg = "Geometry Large Group";
-var l = "Lunch";
-var s = "Strength";
-var d = "German";
-var b = "Biology";
-var blg = "Biology Large Group";
-var m = "Ap Macroeconomics";
-var f = "Freshman Ceminar";
-var bnd = "Band";
-var modss = [
-  h,e,o,g,l,o,o,blg,s,d,bnd,
-  h,glg,b,m,d,l,o,f,s,e,bnd,
-  " ",o,g,o,b,e,bnd,m,d,s,o,
-  h,elg,b,g,bnd,m,d,l,s,o,o,
-  h,o,g,o,b,e,l,m,d,s,bnd
-];
 var mods = await format()
-console.log(`Mod: ${mods[49]}`)
 var modStartTimes = ["8:00","8:15","8:57","9:39","10:21","11:03","11:45","12:27","13:09","13:51","14:33"];
 var modEndTimes = ["8:10","8:52","9:34","10:16","10:58","11:40","12:22","13:04","13:46","14:28","15:10"];
 
 var modStartTimesW = ["N/A","8:00","8:46","9:27","10:08","10:49","11:30","12:11","12:52","13:33","14:14"];
 var modEndTimesW = ["N/A","8:41","9:22","10:03","10:44","11:25","12:06","12:47","13:28","14:09","14:50"];
+
+// Retreve the mod number fo a specific time
 function getModNum(n,d) {
   var m = -1
   if (hrS < n && n < hrE && d != 3) {
@@ -785,7 +756,8 @@ function getModNum(n,d) {
   } 
   return m
 }
-console.log(`get mod num: ${getModNum(now,dow)}`)
+
+/* retrive the time that the mod starts at */
 function getModStartTime(d,m) {
   var mod = "N/A";
   if (m > 10) {
@@ -799,7 +771,7 @@ function getModStartTime(d,m) {
   }
   return mod;
 }
-
+// Retrive the time of the end of the current mod
 function getModEndTime(d,m) {
   var mod = "N/A";
   if (m > 10) {
@@ -813,7 +785,7 @@ function getModEndTime(d,m) {
   }
   return mod;
 }
-
+// Format the mod num into a traceable number on the array
 function accountForDOW(d,m) {
   if (d >= 3 && d <= 5) {
     if (d == 3) {
@@ -823,13 +795,7 @@ function accountForDOW(d,m) {
     }
   var dw = ((d-1) * 10) + dt;
   var md = dw + m
-  console.warn(md)
-  console.warn(dw)
-  console.warn(d)
-  console.warn(m)
-  console.warn(m+dw +1)
   if (md >= 33 && d == 3 || md >= 44 && d == 4 || md >= 55 && d == 5) {
-    console.log('run')
     var t = " "
   } else {
   t = mods[m + dw]; 
@@ -860,11 +826,6 @@ var pclr = new Color("f080f0");
 var tealclr = new Color("0ff")
 var gclr = new Color("00f");
 var bclr = new Color("0f0");
-console.log(getModNum(now, dow));
-console.log(mods[getModNum(now, dow)])
-console.log(`testing var: ${accountForDOW(3, getModNum(now, 3))}`)
-console.log(dow)
-console.log(mods[32])
 async function createWidget() {
   let listWidget = new ListWidget()
   listWidget.backgroundColor = bkgclr
