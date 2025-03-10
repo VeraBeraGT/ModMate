@@ -28,7 +28,7 @@ return yorn
 }
 
 async function askForUpdate() {
-  //let yorn = await checkForUpdate()
+  let yorn = await checkForUpdate()
     let fm = FileManager.iCloud();
     let dir = fm.documentsDirectory();
     let filePath = fm.joinPath(dir, "ModMate.js")
@@ -50,12 +50,9 @@ alert.addAction("No")
         fm.writeString(filePath, json)  
         }
     }
+    await showMainMenu()
     return file; json
 }
-
-console.log(await checkForUpdate())
-console.log(await askForUpdate())
-
 
 async function showMainMenu() {
     let table = new UITable();
@@ -1011,12 +1008,8 @@ if (config.runsInAccessoryWidget) {
   Script.setWidget(widget);
 } else if (config.runsInApp) {
     format()
-    if (await checkForUpdate() == false) {
-        await askForUpdate()
-    } else {
-        await showMainMenu();
-    }
+    await askForUpdate()
 Script.complete()
 } else {
-  //widget.presentExtraLarge()
+  widget.presentExtraLarge()
 }
