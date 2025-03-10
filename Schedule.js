@@ -1,6 +1,3 @@
-// Variables used by Scriptable.
-// These must be at the very top of the file. Do not edit.
-// icon-color: deep-gray; icon-glyph: magic;
 const fm = FileManager.local();
 const dir = fm.documentsDirectory();
 const filePath = fm.joinPath(dir, "schedule.json");
