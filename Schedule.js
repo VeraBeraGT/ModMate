@@ -13,6 +13,50 @@ let settings = fm.fileExists(settingsPath) ? JSON.parse(fm.readString(settingsPa
 
 let secIdIndex;
 
+let yorn;
+
+async function checkForUpdate() {
+    let fm = FileManager.iCloud();
+    let dir = fm.documentsDirectory();
+    let filePath = fm.joinPath(dir, "ModMate.js")
+    let file = fm.readString(filePath)
+  let url = "https://raw.githubusercontent.com/VeraBeraGT/ModMate/refs/heads/main/Schedule.js"
+  let req = new Request(url)
+  let json = await req.loadString()
+  yorn = file == json
+return yorn
+}
+
+async function askForUpdate() {
+  //let yorn = await checkForUpdate()
+    let fm = FileManager.iCloud();
+    let dir = fm.documentsDirectory();
+    let filePath = fm.joinPath(dir, "ModMate.js")
+    let file = fm.readString(filePath)
+  let url = "https://raw.githubusercontent.com/VeraBeraGT/ModMate/refs/heads/main/Schedule.js"
+  let req = new Request(url)
+  let json = await req.loadString()
+let alert = new Alert()
+alert.tittle = "Update Available"
+alert.message = "Would you like to install the Update?"
+alert.addAction("Yes")
+alert.addAction("No")
+
+    if (yorn == false) {
+      let response = await alert.present()
+        if (response == 1) {
+          await showMainMenu();
+        } else {
+        fm.writeString(filePath, json)  
+        }
+    }
+    return file; json
+}
+
+console.log(await checkForUpdate())
+console.log(await askForUpdate())
+
+
 async function showMainMenu() {
     let table = new UITable();
     table.showSeparators = true;
@@ -90,7 +134,6 @@ async function editColors() {
     await table.present();
     
 }
-
 async function showMenu() {
     
     let table = new UITable();
@@ -968,7 +1011,12 @@ if (config.runsInAccessoryWidget) {
   Script.setWidget(widget);
 } else if (config.runsInApp) {
     format()
-  await showMainMenu();
+    if (await checkForUpdate() == false) {
+        await askForUpdate()
+    } else {
+        await showMainMenu();
+    }
+Script.complete()
 } else {
   //widget.presentExtraLarge()
 }
