@@ -37,7 +37,7 @@ async function askForUpdate() {
   let req = new Request(url)
   let json = await req.loadString()
 let alert = new Alert()
-alert.tittle = "Update Available"
+alert.title = "Update Available"
 alert.message = "Would you like to install the Update?"
 alert.addAction("Yes")
 alert.addAction("No")
