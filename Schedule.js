@@ -134,7 +134,13 @@ async function editColors() {
 async function showMenu() {
     
     let table = new UITable();
-    table.showSeparators = true;
+    
+    let header = new UITableRow()
+    
+    let cell = header.addText("Select a class to edit it's name or it's mod number.\nIf you just added a class, click on your newly added class to edit the mod numbers and name.")
+    header.height = 100;
+    table.addRow(header)
+    
     
     let backRow = new UITableRow();
         let backButton = backRow.addButton("⬅ Back");
@@ -150,6 +156,7 @@ async function showMenu() {
         await showMenu();
     };
     table.addRow(addRow);
+    table.showSeparators = true;
     
     schedule.forEach((cls, index) => {
         let row = new UITableRow();
@@ -894,6 +901,81 @@ async function createWidget() {
   currentClassEndTime.font = Font.blackSystemFont(txtSize);
   currentClassEndTime.centerAlignText();
   currentClassEndTime.textColor = wclr
+  
+  } else if (config.widgetFamily == "large") {
+    var txtSize = 30;
+    var smallTxtSize = 35;
+  let topStack = listWidget.addStack()
+  //topStack.backgroundColor = new Color("black")
+  topStack.size = new Size(345, 125);
+  topStack.centerAlignContent()
+  
+  let nextClass = topStack.addText("Next Class: " + accountForDOW(dow, getModNum(now, dow) + 1))
+  nextClass.font = Font.blackSystemFont(35);
+  nextClass.centerAlignText();
+  nextClass.textColor = txtclr
+  
+  let bottomStack = listWidget.addStack()
+  //bottomStack.backgroundColor = new Color("#FF0000")
+  bottomStack.size = new Size(345, 225);
+  bottomStack.layoutVertically();
+  bottomStack.centerAlignContent();
+  
+  let txtStack = bottomStack.addStack()
+  txtStack.size = new Size(345, 60);
+  
+  let txt = txtStack.addText("Upcomming:")
+  txt.font = Font.blackSystemFont(40)
+  txt.textColor = txtclr
+  
+  let lineHolderStack = bottomStack.addStack();
+  lineHolderStack.size = new Size(345, 10);
+  
+  let lineStack = lineHolderStack.addStack();
+  lineStack.size = new Size(300, 10);
+  lineStack.backgroundColor = txtclr;
+  
+  let botBStack = bottomStack.addStack()
+  botBStack.size = new Size(345, 155);
+  
+  
+  let timeStack = botBStack.addStack()
+  timeStack.size = new Size(100, 155);
+  timeStack.layoutVertically();
+  timeStack.centerAlignContent()
+  
+  let time1 = timeStack.addText(getModStartTime(dow, getModNum(now,dow) + 1));
+  time1.font = Font.lightMonospacedSystemFont(smallTxtSize);
+  time1.textColor = txtclr;
+  time1.centerAlignText()
+  
+  let time2 = timeStack.addText(getModStartTime(dow, getModNum(now,dow) + 2));
+  time2.font = Font.lightMonospacedSystemFont(smallTxtSize);
+  time2.textColor = txtclr;
+  
+  let time3 = timeStack.addText(getModStartTime(dow, getModNum(now,dow) + 3));
+  time3.font = Font.lightMonospacedSystemFont(smallTxtSize);
+  time3.textColor = txtclr;
+  
+  let classStack = botBStack.addStack()
+  classStack.size = new Size(245, 155);
+  classStack.layoutVertically();
+  classStack.centerAlignContent()
+  
+  let class1 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 1));
+  class1.font = Font.lightMonospacedSystemFont(smallTxtSize);
+  class1.textColor = txtclr;
+  class1.centerAlignText()
+  
+  let class2 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 2));
+  class2.font = Font.lightMonospacedSystemFont(smallTxtSize);
+  class2.textColor = txtclr;
+  
+  let class3 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 3));
+  class3.font = Font.lightMonospacedSystemFont(smallTxtSize);
+  class3.textColor = txtclr;
+  
+  listWidget.spacing = 10
   
   } else if (config.widgetFamily == "extraLarge") {
     var bigText = 40;
