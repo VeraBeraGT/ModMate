@@ -836,7 +836,7 @@ function getModEndTime(d,m) {
 function accountForDOW(d,m) {
   if (d >= 3 && d <= 5) {
     if (d == 3) {
-      var dt = d
+      var dt = d-1
     } else {
       var dt = d-1
     }
