@@ -59,14 +59,16 @@ async function showMainMenu() {
     table.showSeparators = true;
     
     let scheduleRow = new UITableRow();
-    let scheduleButton = scheduleRow.addButton("📅 Open Schedule");
+    let scheduleButton = scheduleRow.addText("📅 Open Schedule");
+    scheduleButton.titleColor = new Color("#00b0FF")
     scheduleRow.onSelect = async () => {
         await showMenu();
     };
     table.addRow(scheduleRow);
     
     let settingsRow = new UITableRow();
-    let settingsButton = settingsRow.addButton("🎨 Edit Colors");
+    let settingsButton = settingsRow.addText("🎨 Edit Colors");
+    settingsButton.titleColor = new Color("#00b0FF")
     settingsRow.onSelect = async () => {
         await editColors();
     };
@@ -80,7 +82,8 @@ async function editColors() {
     table.showSeparators = true;
     
     let backRow = new UITableRow();
-        let backButton = backRow.addButton("⬅ Back");
+        let backButton = backRow.addText("⬅ Back");
+    backButton.titleColor = new Color("#00b0FF")
         backRow.onSelect = async () => {
             await showMainMenu();
         };
@@ -121,7 +124,8 @@ async function editColors() {
     table.addRow(textRow);
     
     let saveRow = new UITableRow();
-    let saveButton = saveRow.addButton("💾 Save Colors");
+    let saveButton = saveRow.addText("💾 Save Colors");
+    saveButton.titleColor = new Color("#00b0FF")
     saveRow.onSelect = async () => {
         fm.writeString(settingsPath, JSON.stringify(settings, null, 2));
         await showMainMenu();
@@ -143,14 +147,16 @@ async function showMenu() {
     
     
     let backRow = new UITableRow();
-        let backButton = backRow.addButton("⬅ Back");
+        let backButton = backRow.addText("⬅ Back");
+    backButton.titleColor = new Color("#00b0FF");
         backRow.onSelect = async () => {
             await showMainMenu();
         };
         table.addRow(backRow);
     
     let addRow = new UITableRow();
-    let addButton = addRow.addButton("➕ Add Class");
+    let addButton = addRow.addText("➕ Add Class");
+    addButton.titleColor = new Color("#00b0FF")
     addRow.onSelect = async () => {
         await addClass();
         await showMenu();
@@ -168,10 +174,7 @@ async function showMenu() {
         table.addRow(row);
     });
     
-    await table.present();
-    /*schedule.forEach = (index) => {
-        secIdIndex = index;
-    }*/
+    await table.present()
     fm.writeString(filePath, JSON.stringify(schedule, null, 2));
 }
 
@@ -203,7 +206,8 @@ async function editClass(index) {
         let table = new UITable();
 
         let backRow = new UITableRow();
-        let backButton = backRow.addButton("⬅ Back");
+        let backButton = backRow.addText("⬅ Back");
+        backButton.titleColor = new Color("#00b0FF")
         backRow.onSelect = async () => {
             await showMenu();
         };
@@ -249,7 +253,8 @@ async function editClass(index) {
         
         
         let saveRow = new UITableRow();
-        let saveButton = saveRow.addButton("💾 Save Changes");
+        let saveButton = saveRow.addText("💾 Save Changes");
+        saveButton.titleColor = new Color("#00b0FF")
         saveRow.onSelect = async () => {
             fm.writeString(filePath, JSON.stringify(schedule, null, 2))
             await showMenu()
@@ -257,7 +262,8 @@ async function editClass(index) {
         table.addRow(saveRow)
         
         let deleteRow = new UITableRow();
-        let deleteButton = deleteRow.addButton("🗑 Delete Class");
+        let deleteButton = deleteRow.addText("🗑 Delete Class");
+        deleteButton.titleColor = new Color("#00b0FF")
         deleteRow.onSelect = async () => {
             schedule.splice(index, 1);
             await showMenu();
