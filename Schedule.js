@@ -1359,7 +1359,6 @@ if (config.runsInAccessoryWidget) {
 } else if (config.runsInApp) {
     format()
     await askForUpdate()
-await showMainMenu()
 Script.complete()
 } else {
   widget.presentExtraLarge()
