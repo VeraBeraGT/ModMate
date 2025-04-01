@@ -1,16 +1,54 @@
-// Variables used by Scriptable.
-// These must be at the very top of the file. Do not edit.
-// icon-color: deep-gray; icon-glyph: magic;
 const fm = FileManager.local();
 const dir = fm.documentsDirectory();
 const filePath = fm.joinPath(dir, "schedule.json");
 const settingsPath = fm.joinPath(dir, "settings.json");
+const assignPath = fm.joinPath(dir, "assignPath.json")
 
 // Load existing schedule or initialize a new one
 let schedule = fm.fileExists(filePath) ? JSON.parse(fm.readString(filePath)) : [];
+// Load existing settings or initialize the file
 let settings = fm.fileExists(settingsPath) ? JSON.parse(fm.readString(settingsPath)) : { backgroundColor: "255,255,255", textColor: "0,0,0" };
+// Load existing assigments or initialize the file
+let assign = fm.fileExists(assignPath) ? JSON.parse(fm.readString(assignPath)) : [];
+// Both for indexing
+let gan = 0;
+let gsn = -1;
+async function addAssignmentsObj() {
+  if (fm.fileExists(assignPath) == false) {
+fm.writeString(assignPath, JSON.stringify(assign, null, 2))
+  }
+}
+await addAssignmentsObj()
 
+async function addId() {
+  let n = 0
+  for (let item of schedule) {
+    if (item.Id == null) {
+    item.Id = n
+    n += 1  
+    }
+  }
+  fm.writeString(filePath, JSON.stringify(schedule, null, 2));
+}
 
+await addId()
+
+async function getGreatestAsiNum() {
+  for (let item of assign) {
+    gan += 1;
+  }
+  return gan
+}
+// For indexing purposes.
+await getGreatestAsiNum()
+
+async function getGreatestSchNum() {
+  for (let item of schedule) {
+    gsn += 1;
+  }
+  return gsn
+}
+await getGreatestSchNum()
 let secIdIndex;
 
 let yorn;
@@ -53,13 +91,13 @@ alert.addAction("No")
     await showMainMenu()
     return file; json
 }
-
+// Its the main menu, duh
 async function showMainMenu() {
     let table = new UITable();
     table.showSeparators = true;
     
     let scheduleRow = new UITableRow();
-    let scheduleButton = scheduleRow.addText("📅 Open Schedule");
+    let scheduleButton = scheduleRow.addText("📅 Edit Schedule");
     scheduleButton.titleColor = new Color("#00b0FF")
     scheduleRow.onSelect = async () => {
         await showMenu();
@@ -76,14 +114,14 @@ async function showMainMenu() {
     
     await table.present();
 }
-
+// Menu for editing colors
 async function editColors() {
     let table = new UITable();
     table.showSeparators = true;
     
     let backRow = new UITableRow();
         let backButton = backRow.addText("⬅ Back");
-    backButton.titleColor = new Color("#00b0FF")
+        backButton.titleColor = new Color("#00b0FF")
         backRow.onSelect = async () => {
             await showMainMenu();
         };
@@ -135,20 +173,21 @@ async function editColors() {
     await table.present();
     
 }
+// Menu For the Schedule
 async function showMenu() {
     
     let table = new UITable();
     
     let header = new UITableRow()
     
-    let cell = header.addText("Select a class to edit it's name or it's mod number.\nIf you just added a class, click on your newly added class to edit the mod numbers and name.")
+    let cell = header.addText("Select a class to edit it's name, it's mod number, or add and remove assignments!")
     header.height = 100;
     table.addRow(header)
     
     
     let backRow = new UITableRow();
         let backButton = backRow.addText("⬅ Back");
-    backButton.titleColor = new Color("#00b0FF");
+        backButton.titleColor = new Color("#00b0FF")
         backRow.onSelect = async () => {
             await showMainMenu();
         };
@@ -159,7 +198,7 @@ async function showMenu() {
     addButton.titleColor = new Color("#00b0FF")
     addRow.onSelect = async () => {
         await addClass();
-        await showMenu();
+        await editClass(gsn + 1);
     };
     table.addRow(addRow);
     table.showSeparators = true;
@@ -168,13 +207,12 @@ async function showMenu() {
         let row = new UITableRow();
         row.addText(cls.name);
         row.onSelect = async () => { 
-            //console.log(index)
             await editClass(index);
         };
         table.addRow(row);
     });
     
-    await table.present()
+    await table.present();
     fm.writeString(filePath, JSON.stringify(schedule, null, 2));
 }
 
@@ -197,10 +235,11 @@ async function addClass() {
         newClass.schedule[day] = null;
     }
     schedule.push(newClass);
+    fm.writeString(filePath, JSON.stringify(schedule, null, 2))
 }
 
 async function editClass(index) {
-    let cls = schedule[index];
+    let cls = schedule[index];  
     
     let updateTable = async () => {
         let table = new UITable();
@@ -249,8 +288,23 @@ async function editClass(index) {
                 await updateTable();
             };
             table.addRow(row);
+            
         }
+          for (as of assign) {
+          let rrow = new UITableRow
+          if (as.cid == index) {
+            rrow.addText(`Name: ${as.name}, Due: ${as.due}`)
+            table.addRow(rrow)
+          	}
+          }
         
+        let assignRow = new UITableRow();
+        let assignButton = assignRow.addText("Edit Assignments");
+        assignButton.titleColor = new Color("#00b0FF")
+        assignRow.onSelect = async () => {
+            await assignn(index);
+        }
+        table.addRow(assignRow)
         
         let saveRow = new UITableRow();
         let saveButton = saveRow.addText("💾 Save Changes");
@@ -276,6 +330,146 @@ async function editClass(index) {
     await updateTable();
 }
 
+async function assignn(index) {
+  let table = new UITable
+  
+  let backRow = new UITableRow();
+        let backButton = backRow.addText("⬅ Back");
+        backButton.titleColor = new Color("#00b0FF")
+        backRow.onSelect = async () => {
+            await editClass(index);
+        };
+        table.addRow(backRow);
+  
+  let addRow = new UITableRow
+  let addButton = addRow.addText("➕ Add An Assignment")
+  addButton.titleColor = new Color("#00b0FF")
+addRow.onSelect = async () => {
+  await addAssign(index) 
+}
+  table.addRow(addRow)
+  let idx = 0;
+  
+ for (let as of assign) {
+      let row = new UITableRow();
+      //console.log(`Name: ${as.name}, Due: ${as.due}`)
+if (as.cid == index) {
+      row.addText(`Name: ${as.name}, Due: ${as.due}`)
+      row.onSelect = async () => {
+        editAssign(as.id, index)
+      };
+      table.addRow(row)
+	}
+};
+	let saveRow = new UITableRow();
+        let saveButton = saveRow.addText("💾 Save Changes");
+        saveButton.titleColor = new Color("#00b0FF")
+        saveRow.onSelect = async () => {
+            fm.writeString(filePath, JSON.stringify(schedule, null, 2))
+            await editClass(index)
+        }
+        table.addRow(saveRow)
+    
+    table.present()
+  
+}
+
+async function editAssign(id,idx) {
+  let eas = assign.find(item => item.id === id);
+  let table = new UITable;
+  
+  let backRow = new UITableRow();
+        let backButton = backRow.addText("⬅ Back");
+        backButton.titleColor = new Color("#00b0FF")
+        backRow.onSelect = async () => {
+            await assignn(idx);
+        };
+        table.addRow(backRow);
+        
+  let nameRow = new UITableRow;
+  let nameButton = nameRow.addText(`Name: ${eas.name}`)
+  nameRow.onSelect = async () => {
+    let alert = new Alert();
+    alert.title = "Enter new assignment name"
+    alert.addTextField(eas.name !== null ? eas.name : null)
+    alert.addAction("Save")
+    alert.addCancelAction("Cancel")
+    let resp = await alert.present();
+    
+    if (resp == -1) return
+    let rep = alert.textFieldValue(0).trim()
+    eas.name = isNaN(rep) ? rep : parseInt(rep, 10);
+    fm.writeString(assignPath, JSON.stringify(assign, null, 2))
+    await editAssign(id,idx);
+  }
+  table.addRow(nameRow)
+  
+  let dueRow = new UITableRow;
+  let dueButton = dueRow.addText(`Due: ${eas.due}`)
+  dueRow.onSelect = async () => {
+    let dp = new DatePicker()
+    let df = new DateFormatter()
+    df.dateFormat = "MMMM d"
+    let du = await dp.pickDate();
+    let due = df.string(du);
+    
+    eas.due = due !== null ? due : eas.due !== null ? eas.due : null;
+    fm.writeString(assignPath, JSON.stringify(assign, null, 2))
+    await editAssign(id,idx);
+  }
+  table.addRow(dueRow)
+  
+  let deleteRow = new UITableRow();
+        let deleteButton = deleteRow.addText("🗑 Delete Assignment");
+        deleteButton.titleColor = new Color("#00b0FF")
+        deleteRow.onSelect = async () => {
+          let alert = new Alert;
+          alert.title = `Are you sure you want to delete ${eas.name}?`;
+          alert.addAction("Yes");
+          alert.addCancelAction("Cancel");
+          let rep = await alert.present();
+          console.log(rep)
+          if (rep == -1) return
+          if (rep == 0) { 
+            assign.splice(eas, 1);
+            fm.writeString(assignPath, JSON.stringify(assign, null, 2))
+            await assignn(idx);
+          }
+        };
+        table.addRow(deleteRow);
+        
+  
+  table.present();
+}
+
+async function addAssign(index) {
+  
+    let alert = new Alert();
+    alert.title = "Enter Assignment Name";
+    alert.addTextField();
+    alert.addAction("OK");
+    alert.addCancelAction("Cancel");
+    
+    let response = await alert.present();
+    let nameInput = alert.textFieldValue(0).trim();
+    if (response == -1) return;
+    
+    let dp = new DatePicker()
+    let df = new DateFormatter()
+    df.dateFormat = "MMMM d"
+    let due = await dp.pickDate();
+
+    let name = isNaN(nameInput) ? nameInput : parseInt(nameInput, 10);
+    if (!name) return;
+
+    let newAssign = {name: name, due: df.string(due), cid: index, id: gan};
+    
+    assign.push(newAssign)
+    
+    fm.writeString(assignPath, JSON.stringify(assign, null, 2))
+    await assignn(index)
+}
+// ------------- My formating method. -------------
 async function format() {
     
     let array = ["HomeRoom"]
@@ -305,7 +499,7 @@ async function format() {
     push = find ? find.name : "Open Mod"
     num = num + 1
     array.push(push)
-    find = schedule.find(item => item.schedule.Monday === 6)
+    find = schedule.find(item => item.schedule.Monday === 6) 
     push = find ? find.name : "Open Mod"
     num = num + 1
     array.push(push)
@@ -453,7 +647,7 @@ async function format() {
     num = num + 1
     array.push(push)
     find = schedule.find(item => item.schedule.Thursday === 10)
-    push = find ? find.name : "Open Modd"
+    push = find ? find.name : "Open Mod"
     num = num + 1
     array.push(push)
     
@@ -500,9 +694,6 @@ async function format() {
     push = find ? find.name : "Open Mod"
     num = num + 1
     array.push(push)
-    
-    
-    
     
     return array;
 }
@@ -810,7 +1001,7 @@ function getModNum(n,d) {
   return m
 }
 
-/* retrive the time that the mod starts at */
+// retrive the time that the mod starts at 
 function getModStartTime(d,m) {
   var mod = "N/A";
   if (m > 10) {
@@ -842,11 +1033,7 @@ function getModEndTime(d,m) {
 function accountForDOW(d,m) {
   if (d >= 3 && d <= 5) {
     if (d == 3) {
-      if (m > 16) {
-        var dt = d
-      } else {
-        var dt = d-1
-      }
+      var dt = d-1
     } else {
       var dt = d-1
     }
@@ -875,6 +1062,73 @@ function accountForDOW(d,m) {
     }
   }
   return t
+}
+// Formating option
+let rd = new RelativeDateTimeFormatter()
+
+// Pulls the assignment list from your current class
+async function getAssign() {
+  if (dow == 1) {
+    let cs = schedule.find(item => item.schedule.Monday === getModNum(now, dow)) !== null ? schedule.find(item => item.schedule.Monday === getModNum(now, dow)) : null
+    if (cs == null) {
+      return null
+    }
+    let txt = "";
+    for (let item of assign) {
+      if (item.cid == cs.Id) {
+       txt = item.id !== null ? `${txt} ${item.name} is due ${item.due}` : null
+      }
+    }
+  return txt
+  } else if (dow == 2) {
+    let cs = schedule.find(item => item.schedule.Tuesday === getModNum(now, dow)) !== null ? schedule.find(item => item.schedule.Tuesday === getModNum(now, dow)) : null
+    if (cs == null) {
+      return null
+    }
+    let txt = "";
+    for (let item of assign) {
+      if (item.cid == cs.Id) {
+       txt = item.id !== null ? `${txt} ${item.name} is due ${item.due}` : null
+      }
+    }
+  return txt
+  } else if (dow == 3) {
+    let cs = schedule.find(item => item.schedule.Wednesday === getModNum(now, dow)) !== null ? schedule.find(item => item.schedule.Wednesday === getModNum(now, dow)) : null
+    if (cs == null) {
+      return null
+    }
+    let txt = "";
+    for (let item of assign) {
+      if (item.cid == cs.Id) {
+       txt = item.id !== null ? `${txt} ${item.name} is due ${item.due}` : null
+      }
+    }
+  return txt
+  } else if (dow == 4) {
+    let cs = schedule.find(item => item.schedule.Thursday === getModNum(now, dow)) !== null ? schedule.find(item => item.schedule.Thursday === getModNum(now, dow)) : null
+    if (cs == null) {
+      return null
+    }
+    let txt = "";
+    for (let item of assign) {
+      if (item.cid == cs.Id) {
+       txt = item.id !== null ? `${txt} ${item.name} is due ${item.due}` : null
+      }
+    }
+  return txt
+  } else if (dow == 5) {
+    let cs = schedule.find(item => item.schedule.Friday === getModNum(now, dow)) !== null ? schedule.find(item => item.schedule.Friday === getModNum(now, dow)) : null
+    if (cs == null) {
+      return null
+    }
+    let txt = "";
+    for (let item of assign) {
+      if (item.cid == cs.Id) {
+       txt = item.id !== null ? `${txt} ${item.name} is due ${item.due}` : null
+      }
+    }
+  return txt
+  }
 }
 var blclr = new Color("000");
 var wclr = new Color("fff");
@@ -916,7 +1170,6 @@ async function createWidget() {
     var txtSize = 30;
     var smallTxtSize = 35;
   let topStack = listWidget.addStack()
-  //topStack.backgroundColor = new Color("black")
   topStack.size = new Size(345, 125);
   topStack.centerAlignContent()
   
@@ -926,7 +1179,6 @@ async function createWidget() {
   nextClass.textColor = txtclr
   
   let bottomStack = listWidget.addStack()
-  //bottomStack.backgroundColor = new Color("#FF0000")
   bottomStack.size = new Size(345, 225);
   bottomStack.layoutVertically();
   bottomStack.centerAlignContent();
@@ -934,7 +1186,7 @@ async function createWidget() {
   let txtStack = bottomStack.addStack()
   txtStack.size = new Size(345, 60);
   
-  let txt = txtStack.addText("Upcomming:")
+  let txt = txtStack.addText("Upcoming:")
   txt.font = Font.blackSystemFont(40)
   txt.textColor = txtclr
   
@@ -987,7 +1239,7 @@ async function createWidget() {
   
   listWidget.spacing = 10
   
-  } else if (config.widgetFamily == "extraLarge") {
+  } else if (config.widgetFamily == "extraLarge" && getAssign() != null) {
     var bigText = 40;
     var txt1Size = 30;
     var txt2Size = 30;
@@ -999,11 +1251,12 @@ async function createWidget() {
   currentClass.textColor = txtclr;
   
   let mainStack = listWidget.addStack();
-  mainStack.size = new Size(718,180);
+  mainStack.size = new Size(718,220);
   
   let leftStack = mainStack.addStack();
-  leftStack.size = new Size(409,180);
+  leftStack.size = new Size(409,220);
   leftStack.centerAlignContent();
+  leftStack.layoutVertically()
   
   let ncStack = leftStack.addStack();
   ncStack.size = new Size(409,180);
@@ -1022,6 +1275,14 @@ async function createWidget() {
   currentClassEndTime.font = Font.blackSystemFont(txt1Size);
   currentClassEndTime.centerAlignText();
   currentClassEndTime.textColor = txtclr;
+  
+  let assiStack = leftStack.addStack()
+  assiStack.size = new Size(409,40)
+  
+  let assiTxt = assiStack.addText(await getAssign() !== null ? await getAssign() : "")
+  assiTxt.font = Font.lightMonospacedSystemFont(txt3Size);
+  assiTxt.leftAlignText();
+  assiTxt.textColor = txtclr;
   
   let rightStack = mainStack.addStack();
   rightStack.size = new Size(309,180)
@@ -1048,9 +1309,6 @@ async function createWidget() {
   let timeStack = rightinfoStack.addStack();
   timeStack.size = new Size(100,120);
   timeStack.layoutVertically();
-  //timeStack.setPadding(0, 20, 0, 0)
-  //timeStack.borderColor = bclr;
-  //timeStack.borderWidth = 2;
   
   let time1 = timeStack.addText(getModStartTime(dow, getModNum(now,dow) + 1));
   time1.font = Font.lightMonospacedSystemFont(txt3Size);
@@ -1100,7 +1358,8 @@ if (config.runsInAccessoryWidget) {
   Script.setWidget(widget);
 } else if (config.runsInApp) {
     format()
-    await askForUpdate()
+    //await askForUpdate()
+await showMainMenu()
 Script.complete()
 } else {
   widget.presentExtraLarge()
