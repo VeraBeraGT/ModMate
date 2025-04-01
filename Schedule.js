@@ -2,7 +2,7 @@ const fm = FileManager.local();
 const dir = fm.documentsDirectory();
 const filePath = fm.joinPath(dir, "schedule.json");
 const settingsPath = fm.joinPath(dir, "settings.json");
-const assignPath = fm.joinPath(dir, "assignPath.json")
+const assignPath = fm.joinPath(dir, "assignPath.json");
 
 // Load existing schedule or initialize a new one
 let schedule = fm.fileExists(filePath) ? JSON.parse(fm.readString(filePath)) : [];
@@ -91,6 +91,7 @@ alert.addAction("No")
           await showMainMenu()
           return
         } else {
+        fm.removeTag(filePath, "v1.2.0")
         fm.writeString(filePath, json)  
         fm.addTag(filePath, tag)
         }
