@@ -58,10 +58,11 @@ async function checkForUpdate() {
     let dir = fm.documentsDirectory();
     let filePath = fm.joinPath(dir, "ModMate.js")
     let file = fm.readString(filePath)
-  let url = "https://raw.githubusercontent.com/VeraBeraGT/ModMate/refs/heads/main/Schedule.js"
+    let fileTag = fm.allTags(filePath)
+  let url = "https://raw.githubusercontent.com/VeraBeraGT/ModMate/refs/heads/main/Version%20checker"
   let req = new Request(url)
   let json = await req.loadString()
-  yorn = file == json
+  yorn = fileTag == json
 return yorn
 }
 
@@ -71,9 +72,13 @@ async function askForUpdate() {
     let dir = fm.documentsDirectory();
     let filePath = fm.joinPath(dir, "ModMate.js")
     let file = fm.readString(filePath)
+    let fileTag = fm.allTags(filePath)
   let url = "https://raw.githubusercontent.com/VeraBeraGT/ModMate/refs/heads/main/Schedule.js"
   let req = new Request(url)
   let json = await req.loadString()
+  let url2 = "https://raw.githubusercontent.com/VeraBeraGT/ModMate/refs/heads/main/Version%20checker"
+  let req2 = new Request(url2)
+  let tag = await req2.loadString()
 let alert = new Alert()
 alert.title = "Update Available"
 alert.message = "Would you like to install the Update?"
@@ -83,9 +88,11 @@ alert.addAction("No")
     if (yorn == false) {
       let response = await alert.present()
         if (response == 1) {
-          await showMainMenu();
+          await showMainMenu()
+          return
         } else {
         fm.writeString(filePath, json)  
+        fm.addTag(filePath, tag)
         }
     }
     await showMainMenu()
@@ -1351,7 +1358,6 @@ async function createWidget() {
   return listWidget;
 }
 let widget = await createWidget();
-// let aWidget = await createAccessory()
 if (config.runsInAccessoryWidget) {
    Script.setWidget(widget);
 } else if (config.runsInWidget) {
