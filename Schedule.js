@@ -1358,7 +1358,7 @@ if (config.runsInAccessoryWidget) {
   Script.setWidget(widget);
 } else if (config.runsInApp) {
     format()
-    //await askForUpdate()
+    await askForUpdate()
 await showMainMenu()
 Script.complete()
 } else {
