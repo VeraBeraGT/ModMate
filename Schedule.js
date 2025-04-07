@@ -58,11 +58,11 @@ async function checkForUpdate() {
     let dir = fm.documentsDirectory();
     let filePath = fm.joinPath(dir, "ModMate.js")
     let file = fm.readString(filePath)
-    let fileTag = fm.allTags(filePath)
   let url = "https://raw.githubusercontent.com/VeraBeraGT/ModMate/refs/heads/main/Version%20checker"
   let req = new Request(url)
   let json = await req.loadString()
-  yorn = fileTag == json
+  let fe = fm.readExtendedAttribute(filePath, json)
+  yorn = !!fe
 return yorn
 }
 
@@ -72,7 +72,6 @@ async function askForUpdate() {
     let dir = fm.documentsDirectory();
     let filePath = fm.joinPath(dir, "ModMate.js")
     let file = fm.readString(filePath)
-    let fileTag = fm.allTags(filePath)
   let url = "https://raw.githubusercontent.com/VeraBeraGT/ModMate/refs/heads/main/Schedule.js"
   let req = new Request(url)
   let json = await req.loadString()
@@ -91,9 +90,9 @@ alert.addAction("No")
           await showMainMenu()
           return
         } else {
-        fm.removeTag(filePath, "v1.2.0")
-        fm.writeString(filePath, json)  
-        fm.addTag(filePath, tag)
+        fm.removeExtendedAttribute(filePath, "v1.2.1")
+        fm.writeString(filePath, json)
+        fm.writeExtendedAttribute(filePath, 1, tag)
         }
     }
     await showMainMenu()
