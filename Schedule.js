@@ -92,7 +92,7 @@ alert.addAction("No")
         } else {
         fm.removeExtendedAttribute(filePath, "v1.2.0")
         fm.writeString(filePath, json)
-        fm.writeExtendedAttribute(filePath, 1, tag)
+        fm.writeExtendedAttribute(filePath, "true", tag)
         }
     }
     await showMainMenu()
