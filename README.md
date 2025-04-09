@@ -1,7 +1,7 @@
 # ModMate
 
 ## What is it?
-It’s a scriptable widget that displays your schedule for school. Eventually it will be able to mark down assignments and do other things similar to what Saturn can do. But for now, it works.
+It’s a scriptable widget that displays your schedule for school, its basicly scheduler 2.0. Eventually it will be able to mark down assignments and do other things similar to what Saturn can do. But for now, it works. This is a kind of placeholder project for the app im going to make out of this. i hope to eventually obtain the WHS PowerSchool API. but for now, maunaul labor is required.
 
 
 ## How to get it?
