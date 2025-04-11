@@ -204,6 +204,7 @@ async function showMenu() {
     addButton.titleColor = new Color("#00b0FF")
     addRow.onSelect = async () => {
         await addClass();
+	await getGreatestSchNum();
         await editClass(gsn + 1);
     };
     table.addRow(addRow);
