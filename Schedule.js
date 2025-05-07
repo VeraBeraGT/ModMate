@@ -33,8 +33,20 @@ async function addId() {
 
 await addId()
 
+async function addRoom() {
+  for (let item of schedule) {
+    if (item.Room == null) {
+    item.Room = "N/A"
+    }
+  }
+  fm.writeString(filePath, JSON.stringify(schedule, null, 2));
+}
+
+await addRoom()
+
 async function getGreatestAsiNum() {
   for (let item of assign) {
+    item.id = gan
     gan += 1;
   }
   return gan
@@ -117,6 +129,14 @@ async function showMainMenu() {
         await editColors();
     };
     table.addRow(settingsRow);
+    
+    let overviewRow = new UITableRow();
+    let overviewButton = overviewRow.addText("🗓️ See The Matrix");
+    overviewButton.titleColor = new Color("#00b0FF")
+    overviewRow.onSelect = async () => {
+      await showOverview();
+    };
+    table.addRow(overviewRow)
     
     await table.present();
 }
@@ -204,7 +224,7 @@ async function showMenu() {
     addButton.titleColor = new Color("#00b0FF")
     addRow.onSelect = async () => {
         await addClass();
-	await getGreatestSchNum();
+        await getGreatestSchNum();
         await editClass(gsn + 1);
     };
     table.addRow(addRow);
@@ -223,7 +243,10 @@ async function showMenu() {
     fm.writeString(filePath, JSON.stringify(schedule, null, 2));
 }
 
-async function addClass() {
+async function addClass(mm = null, md = null) {
+  //console.log(gsn)
+    gsn += 1
+    //console.log(gsn)
     let alert = new Alert();
     alert.title = "Enter Class Name";
     alert.addTextField();
@@ -237,15 +260,30 @@ async function addClass() {
     let name = isNaN(nameInput) ? nameInput : parseInt(nameInput, 10);
     if (!name) return;
     
-    let newClass = {name, schedule: {}};
-    for (let day of ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]) {
+      let newClass = {name, schedule: {}};
+      //console.log(newClass)
+      for (let day of ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]) {
         newClass.schedule[day] = null;
+        newClass.Id = gsn;
+        newClass.Room = null
+      }
+        //console.log(newClass)
+    if (md == "Monday") {
+      newClass.schedule.Monday = mm;
+    } else if (md == "Tuesday") {
+      newClass.schedule.Tuesday = mm
+    } else if (md == "Wednesday") {
+      newClass.schedule.Wednesday = mm
+    } else if (md == "Thursday") {
+      newClass.schedule.Thursday = mm
+    } else if (md == "Friday") {
+      newClass.schedule.Friday = mm
     }
-    schedule.push(newClass);
+     schedule.push(newClass);
     fm.writeString(filePath, JSON.stringify(schedule, null, 2))
 }
 
-async function editClass(index) {
+async function editClass(index, fmm = false) {
     let cls = schedule[index];  
     
     let updateTable = async () => {
@@ -255,7 +293,9 @@ async function editClass(index) {
         let backButton = backRow.addText("⬅ Back");
         backButton.titleColor = new Color("#00b0FF")
         backRow.onSelect = async () => {
+          if (fmm == false) { 
             await showMenu();
+          }
         };
         table.addRow(backRow);
         
@@ -276,6 +316,24 @@ async function editClass(index) {
             await updateTable();
         };
         table.addRow(nameRow);
+        
+        let roomRow = new UITableRow();
+        roomRow.addText("Room Number " + cls.Room);
+        roomRow.onSelect = async () => {
+            let alert2 = new Alert();
+            alert2.title = "Edit Room Number";
+            alert2.addTextField(cls.Room.toString());
+            alert2.addAction("Save");
+            alert2.addCancelAction("Cancel");
+            
+            let response2 = await alert2.present();
+            if (response2 != -1) {
+                let nameInput2 = alert2.textFieldValue(0).trim();
+                cls.Room = isNaN(nameInput2) ? nameInput2 : parseInt(nameInput2, 10);
+            }
+            await updateTable();
+        };
+        table.addRow(roomRow)
         
         for (let day of Object.keys(cls.schedule)) {
             let row = new UITableRow();
@@ -309,7 +367,7 @@ async function editClass(index) {
         let assignButton = assignRow.addText("Edit Assignments");
         assignButton.titleColor = new Color("#00b0FF")
         assignRow.onSelect = async () => {
-            await assignn(index);
+            await assignn(index, fm);
         }
         table.addRow(assignRow)
         
@@ -318,7 +376,9 @@ async function editClass(index) {
         saveButton.titleColor = new Color("#00b0FF")
         saveRow.onSelect = async () => {
             fm.writeString(filePath, JSON.stringify(schedule, null, 2))
+            if (fmm == false) { 
             await showMenu()
+            }
         }
         table.addRow(saveRow)
         
@@ -327,7 +387,10 @@ async function editClass(index) {
         deleteButton.titleColor = new Color("#00b0FF")
         deleteRow.onSelect = async () => {
             schedule.splice(index, 1);
+            fm.writeString(filePath, JSON.stringify(schedule, null, 2))
+            if (fmm == false) {
             await showMenu();
+            }
         };
         table.addRow(deleteRow);
         
@@ -337,14 +400,14 @@ async function editClass(index) {
     await updateTable();
 }
 
-async function assignn(index) {
+async function assignn(index, fmm) {
   let table = new UITable
   
   let backRow = new UITableRow();
         let backButton = backRow.addText("⬅ Back");
         backButton.titleColor = new Color("#00b0FF")
         backRow.onSelect = async () => {
-            await editClass(index);
+            await editClass(index, fmm);
         };
         table.addRow(backRow);
   
@@ -363,7 +426,7 @@ addRow.onSelect = async () => {
 if (as.cid == index) {
       row.addText(`Name: ${as.name}, Due: ${as.due}`)
       row.onSelect = async () => {
-        editAssign(as.id, index)
+        editAssign(as.id, index, fmm)
       };
       table.addRow(row)
 	}
@@ -373,7 +436,7 @@ if (as.cid == index) {
         saveButton.titleColor = new Color("#00b0FF")
         saveRow.onSelect = async () => {
             fm.writeString(filePath, JSON.stringify(schedule, null, 2))
-            await editClass(index)
+            await editClass(index, fmm)
         }
         table.addRow(saveRow)
     
@@ -381,15 +444,16 @@ if (as.cid == index) {
   
 }
 
-async function editAssign(id,idx) {
+async function editAssign(id,idx, fmm) {
   let eas = assign.find(item => item.id === id);
+  //console.log(eas)
   let table = new UITable;
   
   let backRow = new UITableRow();
         let backButton = backRow.addText("⬅ Back");
         backButton.titleColor = new Color("#00b0FF")
         backRow.onSelect = async () => {
-            await assignn(idx);
+            await assignn(idx, fmm);
         };
         table.addRow(backRow);
         
@@ -435,11 +499,13 @@ async function editAssign(id,idx) {
           alert.addAction("Yes");
           alert.addCancelAction("Cancel");
           let rep = await alert.present();
-          console.log(rep)
+          //console.log(rep)
           if (rep == -1) return
           if (rep == 0) { 
-            assign.splice(eas, 1);
+            assign.splice(eas.id, 1);
             fm.writeString(assignPath, JSON.stringify(assign, null, 2))
+            gan = 0
+            await getGreatestAsiNum()
             await assignn(idx);
           }
         };
@@ -475,6 +541,214 @@ async function addAssign(index) {
     
     fm.writeString(assignPath, JSON.stringify(assign, null, 2))
     await assignn(index)
+}
+
+async function showOverview() {
+  let table = new UITable()
+  table.present(true) 
+  var nRow = new UITableRow
+  var mRow = new UITableRow
+  var tRow = new UITableRow
+  var wRow = new UITableRow
+  var thRow = new UITableRow
+  var fRow = new UITableRow
+  var backRow = new UITableRow()
+  
+  
+  let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+  let nums = [1,2,3,4,5,6,7,8,9,10]
+  let se = schedule
+  
+  table.showSeparators = true
+  async function updateMatrix() {
+    table.removeAllRows()
+    await updateData()
+    
+    table.addRow(backRow)
+    table.addRow(nRow)
+    table.addRow(mRow)
+    table.addRow(tRow)
+    table.addRow(wRow)
+    table.addRow(thRow)
+    table.addRow(fRow)
+    
+    let refreshRow = new UITableRow()
+    refreshRow.addText("🔄 Refresh")
+    refreshRow.onSelect = async () => {
+      await updateMatrix()
+    }
+    table.addRow(refreshRow)
+    
+    refreshRow.dismissOnSelect = false
+    
+    await table.reload()
+  } 
+  
+  async function updateData() {
+  nRow = new UITableRow
+  mRow = new UITableRow
+  tRow = new UITableRow
+  wRow = new UITableRow
+  thRow = new UITableRow
+  fRow = new UITableRow
+  backRow = new UITableRow()
+  
+  let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+  let nums = [1,2,3,4,5,6,7,8,9,10]
+  let se = schedule
+  
+  let backButton = backRow.addText("⬅ Back");
+  backButton.titleColor = new Color("#00b0FF")
+  backRow.onSelect = async () => {
+    await showMainMenu();
+  };
+      
+      
+  nRow.cellSpacing = 10
+  nRow.addText(" ")
+  for (let f of nums) {
+    let t = nRow.addText(`${f}`);
+    t.centerAligned()
+  }
+  
+  mRow.height = 88
+  mRow.cellSpacing = 10
+  mRow.addText("Monday")
+  for (const n of nums) {
+    let s = se.find(item => item.schedule.Monday === n)
+    let txt = s ? s.name : "Open Mod";
+    let t = mRow.addButton(txt)
+    t.titleColor = new Color("#fff")
+    t.onTap = async () => {
+      if (txt == "Open Mod") { 
+        await matrixPrompt(s, txt, "Monday", n)
+      }
+      await editClass(s.Id, true)
+    }
+    t.centerAligned()
+  }
+  
+  tRow.backgroundColor = new Color("255 2 3")
+  tRow.height = 88
+  tRow.cellSpacing = 10
+  tRow.addText("Tuesday")
+  for (const n of nums) {
+    let s = se.find(item => item.schedule.Tuesday === n)
+    let txt = s ? s.name : "Open Mod";
+    let t = tRow.addButton(txt)
+    t.onTap = async () => {
+      if (txt == "Open Mod") {
+        await matrixPrompt(s, txt, "Tuesday", n)
+      }
+      await editClass(s.Id, true)
+    }
+    t.centerAligned()
+  }
+  
+  wRow.height = 88
+  wRow.cellSpacing = 10
+  wRow.addText("Wednesday")
+  for (const n of nums) {
+    let s = se.find(item => item.schedule.Wednesday === n);
+    let txt = s ? s.name : "Open Mod";
+    let t = wRow.addButton(txt);
+    t.onTap = async () => {
+      if (txt == "Open Mod") {
+        await matrixPrompt(s, txt, "Wednesday", n);
+      }
+      await editClass(s.Id, true);
+    }
+    t.centerAligned()
+  }
+  
+  thRow.height = 88
+  thRow.cellSpacing = 10
+  thRow.addText("Thursday")
+  for (const n of nums) {
+    let s = se.find(item => item.schedule.Thursday === n)
+    let txt = s ? s.name : "Open Mod";
+    let t = thRow.addButton(txt)
+    t.onTap = async () => {
+      if (txt == "Open Mod") {
+        await matrixPrompt(s, txt, "Thursday", n);
+      }
+      await editClass(s.Id, true)
+    }
+    t.centerAligned()
+  }
+  
+  fRow.height = 88
+  fRow.cellSpacing = 10
+  fRow.addText("Friday")
+  for (const n of nums) {
+    let s = se.find(item => item.schedule.Friday === n)
+    let txt = s ? s.name : "Open Mod";
+    let t = fRow.addButton(txt)
+    t.onTap = async () => {
+      if (txt == "Open Mod") {
+        await matrixPrompt(s, txt, "Friday", n);
+      }
+      await editClass(s.Id, true)
+    }
+    t.centerAligned()
+  }
+  }
+  await updateMatrix()
+}
+async function matrixPrompt(s, txt, d, n) {
+  let se = schedule
+  if (txt == "Open Mod") {
+        let alert = new Alert()
+        alert.title = "Do you want to add a new class?"
+        alert.addAction("Yes");
+        alert.addCancelAction("No");
+        
+        let rep = await alert.present()
+        if (rep == 0) {
+          await addClass(n, d);
+          await editClass(gsn)
+        }
+        if (rep == -1) {
+          let alert2 = new Alert()
+          alert2.title = "Pick a class to add, or click cancel"
+          for (const c of se) {
+            alert2.addAction(c.name)
+          }
+          alert2.addCancelAction("Cancel")
+          let rep2 = await alert2.present()
+          
+          if (rep2 != -1) {
+            if (d == "Monday") {
+              let ss = se[rep2];
+              //console.log(`N: ${n}`)
+              ss.schedule.Monday = n
+              fm.writeString(filePath, JSON.stringify(schedule, null, 2))
+            } else if (d == "Tuesday") {
+              let ss = se[rep2];
+              //console.log(`N: ${n}`)
+              ss.schedule.Tuesday = n
+              fm.writeString(filePath, JSON.stringify(schedule, null, 2))
+            } else if (d == "Wednesday") {
+              let ss = se[rep2];
+              //console.log(`N: ${n}`)
+              ss.schedule.Wednesday = n
+              fm.writeString(filePath, JSON.stringify(schedule, null, 2))
+            } else if (d == "Thursday") {
+              let ss = se[rep2];
+              //console.log(`N: ${n}`)
+              ss.schedule.Thursday = n
+              fm.writeString(filePath, JSON.stringify(schedule, null, 2))
+            } else if (d == "Friday") {
+              let ss = se[rep2];
+              //console.log(`N: ${n}`)
+              ss.schedule.Friday = n
+              fm.writeString(filePath, JSON.stringify(schedule, null, 2))
+            }
+            
+          }
+        }
+      }
+      
 }
 // ------------- My formating method. -------------
 async function format() {
@@ -710,6 +984,7 @@ let bkgclr = new Color(settings.backgroundColor)
 
 var now = new Date();
 var dow = now.getDay();
+
 // Homeroom
 // Start Time 
 let hrS = new Date();
@@ -951,11 +1226,11 @@ mod10EW.setHours(14);
 mod10EW.setMinutes(50);
 
 var mods = await format()
-var modStartTimes = ["8:00","8:15","8:57","9:39","10:21","11:03","11:45","12:27","13:09","13:51","14:33"];
-var modEndTimes = ["8:10","8:52","9:34","10:16","10:58","11:40","12:22","13:04","13:46","14:28","15:10"];
+var modStartTimes = ["08:00","08:15","08:57","09:39","10:21","11:03","11:45","12:27","13:09","13:51","14:33"];
+var modEndTimes = ["08:10","08:52","09:34","10:16","10:58","11:40","12:22","13:04","13:46","14:28","15:10"];
 
-var modStartTimesW = ["N/A","8:00","8:46","9:27","10:08","10:49","11:30","12:11","12:52","13:33","14:14"];
-var modEndTimesW = ["N/A","8:41","9:22","10:03","10:44","11:25","12:06","12:47","13:28","14:09","14:50"];
+var modStartTimesW = ["N/A","08:00","08:46","09:27","10:08","10:49","11:30","12:11","12:52","13:33","14:14"];
+var modEndTimesW = ["N/A","08:41","09:22","10:03","10:44","11:25","12:06","12:47","13:28","14:09","14:50"];
 
 // Retreve the mod number fo a specific time
 function getModNum(n,d) {
@@ -963,43 +1238,43 @@ function getModNum(n,d) {
   if (hrS < n && n < hrE && d != 3) {
    m = 0 
   } else if (hrE < n && n < mod1S && d != 3) {
-    m = 1
+    m = 0.5
   } else if (mod1S <= n && n < mod1E && d != 3 || mod1SW <= n && n < mod1EW && d == 3) {
     m = 1
   } else if (mod1E <= n && n < mod2S && d != 3 || mod1EW <= n && n < mod2SW && d == 3) {
-    m = 2
+    m = 1.5
   } else if (mod2S <= n && n < mod2E && d != 3 || mod2SW <= n && n < mod2EW && d == 3) {
     m = 2
   } else if (mod2E <= n && n < mod3S && d != 3 || mod2EW <= n && n < mod3SW && d == 3) {
-    m = 3
+    m = 2.5
   } else if (mod3S <= n && n < mod3E && d != 3 || mod3SW <= n && n < mod3EW && d == 3) {
     m = 3
   } else if (mod3E <= n && n < mod4S && d != 3 || mod3EW <= n && n < mod4SW && d == 3) {
-    m = 4
+    m = 3.5
   } else if (mod4S <= n && n < mod4E && d != 3 || mod4SW <= n && n < mod4EW && d == 3) {
     m = 4
   } else if (mod4E <= n && n < mod5S && d != 3 || mod4EW <= n && n < mod5SW && d == 3) {
-    m = 5
+    m = 4.5
   } else if (mod5S <= n && n < mod5E && d != 3 || mod5SW <= n && n < mod5EW && d == 3) {
     m = 5
   } else if (mod5E <= n && n < mod6S && d != 3 || mod5EW <= n && n < mod6SW && d == 3) {
-    m = 6
+    m = 5.5
   } else if (mod6S <= n && n < mod6E && d != 3 || mod6SW <= n && n < mod6EW && d == 3) {
     m = 6
   } else if (mod6E <= n && n < mod7S && d != 3 || mod6EW <= n && n < mod7SW && d == 3) {
-    m = 7
+    m = 6.5
   } else if (mod7S <= n && n < mod7E && d != 3 || mod7SW <= n && n < mod7EW && d == 3) {
     m = 7
   } else if (mod7E <= n && n < mod8S && d != 3 || mod7EW <= n && n < mod8SW && d == 3) {
-    m = 8
+    m = 7.5
   } else if (mod8S <= n && n < mod8E && d != 3 || mod8SW <= n && n < mod8EW && d == 3) {
     m = 8
   } else if (mod8E <= n && n < mod9S && d != 3 || mod8EW <= n && n < mod9SW && d == 3) {
-    m = 9
+    m = 8.5
   } else if (mod9S <= n && n < mod9E && d != 3 || mod9SW <= n && n < mod9EW && d == 3) {
     m = 9
   } else if (mod9E <= n && n < mod10S && d != 3 || mod9EW <= n && n < mod1SW && d == 3) {
-    m = 10
+    m = 9.5
   }	else if (mod10S <= n && n < mod10E && d != 3 || mod10SW <= n && n < mod10EW && d == 3) {
     m = 10
   } else if (mod10E <= n && d != 3 || mod10EW <= n && d == 3) {
@@ -1007,10 +1282,12 @@ function getModNum(n,d) {
   } 
   return m
 }
-
 // retrive the time that the mod starts at 
 function getModStartTime(d,m) {
   var mod = "N/A";
+  if (m == 0.5 || m == 1.5 || m == 2.5 || m == 3.5 || m == 4.5 || m == 5.5 || m == 6.5 || m == 7.5 || m == 8.5 || m == 9.5) {
+    m += 0.5
+  }
   if (m > 10) {
     mod = " "
   } else {
@@ -1025,6 +1302,9 @@ function getModStartTime(d,m) {
 // Retrive the time of the end of the current mod
 function getModEndTime(d,m) {
   var mod = "N/A";
+  if (m == 0.5 || m == 1.5 || m == 2.5 || m == 3.5 || m == 4.5 || m == 5.5 || m == 6.5 || m == 7.5 || m == 8.5 || m == 9.5) {
+    m += 0.5
+  }
   if (m > 10) {
     mod = " "
   } else {  
@@ -1038,7 +1318,14 @@ function getModEndTime(d,m) {
 }
 // Format the mod num into a traceable number on the array
 function accountForDOW(d,m) {
-  if (d >= 3 && d <= 5) {
+  let t;
+  	if (m == 0.5 || m == 1.5 || m == 2.5 || m == 3.5 || m == 4.5 || m == 5.5 || m == 6.5 || m == 7.5 || m == 8.5 || m == 9.5) {
+    	m += 0.5
+  	}
+    if (m > 10) {
+      return null
+    }
+    if (d >= 3 && d <= 5) {
     if (d == 3) {
       var dt = d-1
     } else {
@@ -1047,7 +1334,7 @@ function accountForDOW(d,m) {
   var dw = ((d-1) * 10) + dt;
   var md = dw + m
   if (md >= 33 && d == 3 || md >= 44 && d == 4 || md >= 55 && d == 5) {
-    var t = " "
+    t = " "
   } else {
   t = mods[m + dw]; 
   }
@@ -1071,10 +1358,11 @@ function accountForDOW(d,m) {
   return t
 }
 // Formating option
-let rd = new RelativeDateTimeFormatter()
+
 
 // Pulls the assignment list from your current class
 async function getAssign() {
+  let c = "f"
   if (dow == 1) {
     let cs = schedule.find(item => item.schedule.Monday === getModNum(now, dow)) !== null ? schedule.find(item => item.schedule.Monday === getModNum(now, dow)) : null
     if (cs == null) {
@@ -1083,7 +1371,12 @@ async function getAssign() {
     let txt = "";
     for (let item of assign) {
       if (item.cid == cs.Id) {
-       txt = item.id !== null ? `${txt} ${item.name} is due ${item.due}` : null
+        if (c == "f") {
+          txt = item.id !== null ? `${item.name}, due: ${item.due}` : null
+          c = "t"
+        } else { 
+          txt = item.id !== null ? `${txt}; ${item.name}, due: ${item.due}` : null
+        }
       }
     }
   return txt
@@ -1095,7 +1388,12 @@ async function getAssign() {
     let txt = "";
     for (let item of assign) {
       if (item.cid == cs.Id) {
-       txt = item.id !== null ? `${txt} ${item.name} is due ${item.due}` : null
+       if (c == "f") {
+          txt = item.id !== null ? `${item.name}, due: ${item.due}` : null
+          c = "t"
+        } else { 
+          txt = item.id !== null ? `${txt}; ${item.name}, due: ${item.due}` : null
+        }
       }
     }
   return txt
@@ -1107,7 +1405,12 @@ async function getAssign() {
     let txt = "";
     for (let item of assign) {
       if (item.cid == cs.Id) {
-       txt = item.id !== null ? `${txt} ${item.name} is due ${item.due}` : null
+       if (c == "f") {
+          txt = item.id !== null ? `${item.name}, due: ${item.due}` : null
+          c = "t"
+        } else { 
+          txt = item.id !== null ? `${txt}; ${item.name}, due: ${item.due}` : null
+        }
       }
     }
   return txt
@@ -1119,7 +1422,12 @@ async function getAssign() {
     let txt = "";
     for (let item of assign) {
       if (item.cid == cs.Id) {
-       txt = item.id !== null ? `${txt} ${item.name} is due ${item.due}` : null
+       if (c == "f") {
+          txt = item.id !== null ? `${item.name}, due: ${item.due}` : null
+          c = "t"
+        } else { 
+          txt = item.id !== null ? `${txt}; ${item.name}, due: ${item.due}` : null
+        }
       }
     }
   return txt
@@ -1131,12 +1439,50 @@ async function getAssign() {
     let txt = "";
     for (let item of assign) {
       if (item.cid == cs.Id) {
-       txt = item.id !== null ? `${txt} ${item.name} is due ${item.due}` : null
+       if (c == "f") {
+          txt = item.id !== null ? `${item.name}, due: ${item.due}` : null
+          c = "t"
+        } else { 
+          txt = item.id !== null ? `${txt}; ${item.name}, due: ${item.due}` : null
+        }
       }
     }
   return txt
   }
 }
+//console.log(await getAssign())
+async function getandorderAssign() {
+  let a = assign
+  let s = schedule
+  let df = new DateFormatter()
+  let rd = new RelativeDateTimeFormatter()
+  let as = []
+  df.dateFormat = "MMMM d"
+  if (assign != null) {
+    for (let i of assign) {
+    let date = i.due
+    let name = i.name
+    let c = s.find(item => item.Id === i.cid)
+    let className = c.name
+    
+    let list = {cname: className, name: i.name, due: date}
+    
+    as.push(list)
+    }
+        as.sort((a, b) => {
+          let ta = new Date(df.date(a.due)) - now;
+          let tb = new Date(df.date(b.due)) - now;
+          return ta - tb;
+    });
+  }
+  return as
+}
+//console.log(await getandorderAssign())
+//console.log(dow)
+//console.log(assign)
+//console.log(schedule)
+//console.log(accountForDOW(dow, getModNum(now, dow)))
+//console.log(getModEndTime(dow, getModNum(now, dow) + .5))
 var blclr = new Color("000");
 var wclr = new Color("fff");
 var rclr = new Color("f00");
@@ -1160,10 +1506,10 @@ async function createWidget() {
   nextClass.centerAlignText();
   nextClass.textColor = txtclr
   
-  } else if (config.runsInAccessoryWidget) {
+  } else if (config.runsInAccessoryWidget && getModNum(now,dow) != 11) {
     var txtSize = 10;
     
-    let nextClass = listWidget.addText("Next Class: " + accountForDOW(dow, getModNum(now, dow) + 1));
+    let nextClass = listWidget.addText("Next Class: " + accountForDOW(dow,getModNum(now,dow) + 1));
   nextClass.font = Font.blackSystemFont(txtSize);
   nextClass.centerAlignText();
   nextClass.textColor = wclr
@@ -1205,11 +1551,11 @@ async function createWidget() {
   lineStack.backgroundColor = txtclr;
   
   let botBStack = bottomStack.addStack()
-  botBStack.size = new Size(345, 155);
-  
+  botBStack.size = new Size(345, 150);
+  botBStack.centerAlignContent();
   
   let timeStack = botBStack.addStack()
-  timeStack.size = new Size(100, 155);
+  timeStack.size = new Size(100, 150);
   timeStack.layoutVertically();
   timeStack.centerAlignContent()
   
@@ -1246,16 +1592,21 @@ async function createWidget() {
   
   listWidget.spacing = 10
   
-  } else if (config.widgetFamily == "extraLarge" && getAssign() != null) {
+  } else if (config.widgetFamily == "extraLarge" && getAssign() != null && getModNum(now,dow) != 11 || config.runsInApp) {
     var bigText = 40;
     var txt1Size = 30;
     var txt2Size = 30;
     var txt3Size = 20;
+    if (accountForDOW(dow, getModNum(now, dow)) != "Open Mod" && config.runsInApp == false) {
+      
     
   let currentClass = listWidget.addText("Current Class: " + accountForDOW(dow, getModNum(now, dow)));
   currentClass.font = Font.blackSystemFont(bigText);
   currentClass.centerAlignText();
   currentClass.textColor = txtclr;
+  currentClass.shadowRadius = 5
+  currentClass.shadowColor = blclr
+  currentClass.shadowOffset = new Point(4,1)
   
   let mainStack = listWidget.addStack();
   mainStack.size = new Size(718,220);
@@ -1275,6 +1626,9 @@ async function createWidget() {
   nextClass.font = Font.blackSystemFont(txt1Size);
   nextClass.centerAlignText();
   nextClass.textColor = txtclr
+  nextClass.shadowRadius = 5
+  nextClass.shadowColor = blclr
+  nextClass.shadowOffset = new Point(4,1)
   
   ncStack.addSpacer(10)
   
@@ -1282,6 +1636,9 @@ async function createWidget() {
   currentClassEndTime.font = Font.blackSystemFont(txt1Size);
   currentClassEndTime.centerAlignText();
   currentClassEndTime.textColor = txtclr;
+  currentClassEndTime.shadowRadius = 5
+  currentClassEndTime.shadowColor = blclr
+  currentClassEndTime.shadowOffset = new Point(4,1)
   
   let assiStack = leftStack.addStack()
   assiStack.size = new Size(409,40)
@@ -1290,6 +1647,7 @@ async function createWidget() {
   assiTxt.font = Font.lightMonospacedSystemFont(txt3Size);
   assiTxt.leftAlignText();
   assiTxt.textColor = txtclr;
+  assiTxt.minimumScaleFactor = 0.1
   
   let rightStack = mainStack.addStack();
   rightStack.size = new Size(309,180)
@@ -1311,50 +1669,112 @@ async function createWidget() {
   underline.backgroundColor = txtclr
   
   let rightinfoStack = rightStack.addStack();
-  rightinfoStack.size = new Size(309,120);
+  rightinfoStack.size = new Size(311,120);
   
   let timeStack = rightinfoStack.addStack();
-  timeStack.size = new Size(100,120);
+  //timeStack.backgroundColor = rclr
+  timeStack.size = new Size(101,120);
+  timeStack.setPadding(0,45,0,0)
   timeStack.layoutVertically();
   
-  let time1 = timeStack.addText(getModStartTime(dow, getModNum(now,dow) + 1));
+  let time1 = timeStack.addText(`${getModStartTime(dow, getModNum(now,dow) + 1)}`);
   time1.font = Font.lightMonospacedSystemFont(txt3Size);
   time1.textColor = txtclr;
+  time1.shadowRadius = 5
+  time1.shadowColor = blclr
+  time1.shadowOffset = new Point(2,1)
   
   let time2 = timeStack.addText(getModStartTime(dow, getModNum(now,dow) + 2));
   time2.font = Font.lightMonospacedSystemFont(txt3Size);
   time2.textColor = txtclr;
+  time2.shadowRadius = 5
+  time2.shadowColor = blclr
+  time2.shadowOffset = new Point(2,1)
   
   let time3 = timeStack.addText(getModStartTime(dow, getModNum(now,dow) + 3));
   time3.font = Font.lightMonospacedSystemFont(txt3Size);
   time3.textColor = txtclr;
+  time3.shadowRadius = 5
+  time3.shadowColor = blclr
+  time3.shadowOffset = new Point(2,1)
   
   let time4 = timeStack.addText(getModStartTime(dow, getModNum(now,dow) + 4));
   time4.font = Font.lightMonospacedSystemFont(txt3Size);
   time4.textColor = txtclr;
+  time4.shadowRadius = 5
+  time4.shadowColor = blclr
+  time4.shadowOffset = new Point(2,1)
+  
+  let seperate1 = rightinfoStack.addStack();
+  seperate1.size = new Size(2,120)
+  seperate1.setPadding(14,0,0,0)
+  
+  let seperate = seperate1.addStack();
+  seperate.backgroundColor = txtclr
+  seperate.size = new Size(2,92)
   
   let classStack = rightinfoStack.addStack();
   classStack.size = new Size(209,120);
+  //classStack.backgroundColor = blclr
   classStack.layoutVertically();
+  classStack.setPadding(0,1,0,0)
   
   let class1 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 1));
   class1.font = Font.lightMonospacedSystemFont(txt3Size);
   class1.textColor = txtclr;
   
-  let class2 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 2));
+  let class2 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 2) != null ? accountForDOW(dow, getModNum(now,dow) +2) : " ");
   class2.font = Font.lightMonospacedSystemFont(txt3Size);
   class2.textColor = txtclr;
   
-  let class3 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 3));
+  let class3 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 3) != null ? accountForDOW(dow, getModNum(now,dow) + 3) : " ");
   class3.font = Font.lightMonospacedSystemFont(txt3Size);
   class3.textColor = txtclr;
   
-  let class4 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 4));
+  let class4 = classStack.addText(accountForDOW(dow, getModNum(now,dow) + 4) != null ? accountForDOW(dow, getModNum(now,dow) + 4) : " ");
   class4.font = Font.lightMonospacedSystemFont(txt3Size);
   class4.textColor = txtclr;
   
-  }
-  
+    } else if (accountForDOW(dow, getModNum(now, dow)) == "Open Mod" || config.runsInApp) {
+      
+      let open = listWidget.addText("Your Open! Things to do:");
+      open.font = Font.blackSystemFont(bigText);
+      open.centerAlignText();
+      open.textColor = txtclr;
+      
+      let mS = listWidget.addStack();
+      mS.size = new Size(718,220);
+      mS.centerAlignContent
+      
+      let items = mS.addStack()
+      items.size = new Size(459,220)
+      items.layoutVertically()
+      
+      let as = await getandorderAssign()
+      for (let i of as) {
+        let n = new Date()
+        let df = new DateFormatter()
+        df.dateFormat = "MMMM d"
+        //console.log(i.due)
+        let dat = new Date(df.date(i.due))
+        dat.setYear(2025)
+        dat.setHours(15)
+        //console.log(dat)
+        let rd = new RelativeDateTimeFormatter()
+        rd.useNamedDateTimeStyle()
+        let time = rd.string(dat, n)
+        let txt = items.addText(`•${i.name} for ${i.cname}, due ${time}`)
+        txt.font = Font.blackSystemFont(txt3Size)
+        txt.textColor = txtclr;
+        items.addSpacer(10)
+      }
+    }	
+  } else if (getModNum(now, dow) == 11) {
+      let home = listWidget.addText("Schools Done for Today!!")
+      home.font = Font.blackSystemFont(40)
+      home.textColor = txtclr
+      home.centerAlignText()
+    }
   return listWidget;
 }
 let widget = await createWidget();
@@ -1365,7 +1785,8 @@ if (config.runsInAccessoryWidget) {
 } else if (config.runsInApp) {
     format()
     await askForUpdate()
+    //widget.presentExtraLarge()
+    //showOverview()
 Script.complete()
 } else {
-  widget.presentExtraLarge()
 }
