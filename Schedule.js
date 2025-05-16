@@ -267,7 +267,6 @@ async function addClass(mm = null, md = null) {
         newClass.Id = gsn;
         newClass.Room = null
       }
-        //console.log(newClass)
     if (md == "Monday") {
       newClass.schedule.Monday = mm;
     } else if (md == "Tuesday") {
