@@ -421,7 +421,7 @@ addRow.onSelect = async () => {
   
  for (let as of assign) {
       let row = new UITableRow();
-      //console.log(`Name: ${as.name}, Due: ${as.due}`)
+      
 if (as.cid == index) {
       row.addText(`Name: ${as.name}, Due: ${as.due}`)
       row.onSelect = async () => {
