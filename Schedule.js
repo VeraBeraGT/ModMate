@@ -627,7 +627,6 @@ async function showOverview() {
     t.centerAligned()
   }
   
-  tRow.backgroundColor = new Color("255 2 3")
   tRow.height = 88
   tRow.cellSpacing = 10
   tRow.addText("Tuesday")
